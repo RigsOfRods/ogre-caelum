@@ -8,11 +8,10 @@
 
 cmake_minimum_required(VERSION 2.4)
 # loose if - else constructs
-SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
+set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
-
 
 # add some functions we use that are shipped with cmake
 INCLUDE(CheckLibraryExists)
@@ -21,15 +20,22 @@ INCLUDE(CheckIncludeFileCXX)
 INCLUDE(CheckCCompilerFlag)
 INCLUDE(CheckCSourceCompiles)
 
-
 # define the project
 project(Caelum)
 
+#################################
+# Buildoptions users can access #
+#################################
+option(BUILD_SHARED_LIBS          "Build Caelum as shared library"              OFF)
+option(Caelum_BUILD_DOCUMENTATION "Build documentation for Caelum"              ON)
+option(Caelum_INSTALL_MANPAGES    "Install manpages if documenation is enabled" OFF)
+#option(Caelum_BUILD_SAMPLES       "Build the examples"                          OFF)
+#set(Caelum_ALTERNATE_COORDSYSTEM "FALSE" CACHE BOOL "alternate coordinate system, do not use unless you are very sure about it")
+#set(Caelum_USE_OGRE_RANDOM       "FALSE" CACHE BOOL "fallback to Ogre's PRNG instead of using our own (not recommended)")
+#set(Caelum_USER_DATA             "FALSE" CACHE BOOL "ability to attach user data to entities")
+
 # find all dependencies
 include(CMakeDependenciesConfig.txt)
-
-# build static libs by default
-SET(BUILD_SHARED_LIBS OFF)
 
 # setup paths
 SET(RUNTIME_OUTPUT_DIRECTORY "${Caelum_SOURCE_DIR}/bin/")
@@ -58,12 +64,6 @@ ELSEIF(UNIX)
   set(CMAKE_EXE_LINKER_FLAGS_RelWithDebug "${CMAKE_EXE_LINKER_FLAGS_RelWithDebug} -O0")
 endif(WIN32)
 
-# some PG build options
-set(Caelum_BUILD_SAMPLES         "TRUE"  CACHE BOOL "build the examples")
-#set(Caelum_ALTERNATE_COORDSYSTEM "FALSE" CACHE BOOL "alternate coordinate system, do not use unless you are very sure about it")
-#set(Caelum_USE_OGRE_RANDOM       "FALSE" CACHE BOOL "fallback to Ogre's PRNG instead of using our own (not recommended)")
-#set(Caelum_USER_DATA             "FALSE" CACHE BOOL "ability to attach user data to entities")
-
 # some versioning things
 SET(LIB_MAJOR_VERSION "0")
 SET(LIB_MINOR_VERSION "6")
@@ -79,7 +79,7 @@ SET(exec_prefix "\${prefix}")
 SET(libdir "\${exec_prefix}/${LIB_INSTALL_DIR}")
 SET(bindir "\${exec_prefix}/bin")
 SET(includedir "\${prefix}/include")
-SET(PACKAGE_NAME "Caelum")
+SET(PACKAGE_NAME "${PROJECT_NAME}")
 SET(PACKAGE_VERSION "${LIB_VERSION}")
 
 # configuration of the config.h and PkgConfig
@@ -117,7 +117,6 @@ endif()
 #	ENDIF()
 #ENDIF()
 
-
 # now add the directories
 add_subdirectory(main)
 
@@ -125,10 +124,8 @@ add_subdirectory(main)
 #	add_subdirectory(samples)
 #endif(Caelum_BUILD_SAMPLES)
 
-
-
 # cpack
-set(CPACK_PACKAGE_DESCRIPTION "Caelum")
+set(CPACK_PACKAGE_DESCRIPTION "${PROJECT_NAME}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Caelum is an add-on for the 3D graphics rendering engine OGRE, aimed to render atmospheric effects.")
 set(CPACK_PACKAGE_NAME "caelum")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "ois")
@@ -152,29 +149,39 @@ ENDIF(APPLE)
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${LIB_VERSION}-${CMAKE_SYSTEM_PROCESSOR}")
 include(CPack)
 
-# doxygen stuff
-find_package(Doxygen)
-if (DOXYGEN_FOUND)
-	message("found doxygen, generating documentation")
+# Documentation (HTML) and manpages
+if (Caelum_BUILD_DOCUMENTATION)
+	find_package(Doxygen REQUIRED)
+
 	# prepare doxygen configuration file
-	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-	# add doxygen as target
-	add_custom_target(doxygen ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-
-	# cleanup $build/api-doc on "make clean"
-	set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES api-doc)
-
-	# add doxygen as dependency to doc-target
-	get_target_property(DOC_TARGET doc TYPE)
-	if(NOT DOC_TARGET)
-		add_custom_target(doc)
+	if (Caelum_INSTALL_MANPAGES)
+		set(Caelum_CONF_MAN "YES")
+	else()
+		set(Caelum_CONF_MAN "NO")
 	endif()
-	add_dependencies(doc doxygen)
-	#	install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/html/ DESTINATION doc/api)
-	# install man pages into packages, scope is now project root..
-	#install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3 DESTINATION share/man/man3/ )
-endif (DOXYGEN_FOUND)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+	add_custom_target(doc ALL
+		${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		COMMENT "Generating API documentation with Doxygen" VERBATIM
+	)
+
+	# Install HTML documentation
+	install(
+		DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/doc/html/"
+		DESTINATION "share/doc/${PROJECT_NAME}/api"
+	)
+
+	if (Caelum_INSTALL_MANPAGES)
+		install(
+			DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/doc/man/man3"
+			DESTINATION "share/man/"
+			FILES_MATCHING PATTERN "${PROJECT_NAME}*.3"
+		)
+	endif()
+endif (Caelum_BUILD_DOCUMENTATION)
 
 # other doc files
-set(DOC_FILES Contributors.txt gpl.txt lgpl.txt ReadMe.txt)
-install(FILES ${DOC_FILES} DESTINATION doc/)
+set(DOC_FILES Contributors.txt lgpl.txt ReadMe.txt)
+install(FILES ${DOC_FILES} DESTINATION "share/doc/${PROJECT_NAME}")
