@@ -1,0 +1,15 @@
+Source: caelum
+Priority: extra
+Section: libs
+Maintainer: Edgar <Edgar@AnotherFoxGuy.com>
+Build-Depends: debhelper (>= 9), libogre-1.9-dev, libois-dev
+Standards-Version: 3.9.8
+Homepage: https://github.com/RigsOfRods/caelum
+Vcs-Git: git://github.com/RigsOfRods/caelum.git
+Vcs-Browser: https://github.com/RigsOfRods/caelum
+
+Package: caelum
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, libogre, libois
+Pre-Depends: ${misc:Pre-Depends}
+Description: Caelum is an add-on for the 3D graphics rendering engine OGRE, aimed to render atmospheric effects.
