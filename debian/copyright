@@ -1,0 +1,9 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Debianized-By: Edgar <Edgar@AnotherFoxGuy.com>
+Upstream-Name: caelum
+Upstream-Contact: Edgar@AnotherFoxGuy.com
+Source: https://github.com/RigsOfRods/caelum
+
+Files: *
+Copyright: 2008 Caelum team. See Contributors.txt for details.
+License: GLP 3.0
