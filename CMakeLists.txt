@@ -20,7 +20,7 @@ INCLUDE(CheckCSourceCompiles)
 # some versioning things
 SET(LIB_MAJOR_VERSION "0")
 SET(LIB_MINOR_VERSION "6")
-SET(LIB_BUILD_VERSION "3")
+SET(LIB_BUILD_VERSION "3" CACHE STRING "build version")
 SET(LIB_VERSION "${LIB_MAJOR_VERSION}.${LIB_MINOR_VERSION}.${LIB_BUILD_VERSION}")
 
 # define the project
@@ -126,7 +126,7 @@ add_subdirectory(main)
 set(CPACK_PACKAGE_DESCRIPTION "Caelum")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Caelum is an add-on for the 3D graphics rendering engine OGRE, aimed to render atmospheric effects.")
 set(CPACK_PACKAGE_NAME "caelum")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libogre-1.9-dev, libois-dev")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libogre-1.9-dev")
 set(CPACK_PACKAGE_CONTACT "Edgar@AnotherFoxGuy.com")
 set(CPACK_PACKAGE_VENDOR "Edgar@AnotherFoxGuy.com")
 SET(CPACK_PACKAGE_VERSION ${LIB_VERSION})
