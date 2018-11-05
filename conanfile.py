@@ -25,4 +25,5 @@ class CaelumConan(ConanFile):
         cmake.install()
 
     def package_info(self):
+        self.cpp_info.includedirs = ['include/Caelum']
         self.cpp_info.libs = tools.collect_libs(self)
