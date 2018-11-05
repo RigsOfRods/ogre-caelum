@@ -4,7 +4,7 @@
 # This is the main file where we prepare the general build environment
 # and provide build configuration options.
 ######################################################################
-# cmake system for Caelum updated on 6-10-2017 by Edgar{at}AnotherFoxGuy{DOT}com
+# cmake system for Caelum updated on 5-11-2018 by Edgar{at}AnotherFoxGuy{DOT}com
 
 cmake_minimum_required(VERSION 3.0.2)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
@@ -34,8 +34,13 @@ SET(BUILD_SHARED_LIBS OFF)
 
 SET(CMAKE_USE_RELATIVE_PATHS OFF)
 
-find_package(OGRE 1.10 REQUIRED)
-link_directories(${OGRE_LIBRARY_DIRS})
+if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup(TARGETS)
+else()
+    find_package(OGRE 1.10 REQUIRED)
+    link_directories(${OGRE_LIBRARY_DIRS})
+endif()
 
 # setup paths
 SET(LIB_INSTALL_DIR "${OGRE_PLUGIN_DIR}")
@@ -44,6 +49,8 @@ SET(LIBRARY_OUTPUT_DIRECTORY "${Caelum_SOURCE_DIR}/lib/")
 SET(ARCHIVE_OUTPUT_DIRECTORY "${Caelum_SOURCE_DIR}/lib/")
 SET(EXECUTABLE_OUTPUT_PATH ${RUNTIME_OUTPUT_DIRECTORY})
 SET(LIBRARY_OUTPUT_PATH ${LIBRARY_OUTPUT_DIRECTORY})
+
+set (CMAKE_CXX_STANDARD 11)
 
 # some optimization flags
 if (WIN32)
@@ -120,39 +127,9 @@ endif ()
 add_subdirectory(main)
 
 if(Caelum_BUILD_SAMPLES)
-	add_subdirectory(samples)
+    add_subdirectory(samples)
 endif(Caelum_BUILD_SAMPLES)
 
-
-# cpack
-set(CPACK_PACKAGE_DESCRIPTION "Caelum")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Caelum is an add-on for the 3D graphics rendering engine OGRE, aimed to render atmospheric effects.")
-set(CPACK_PACKAGE_NAME "caelum")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libogre-1.9-dev")
-set(CPACK_PACKAGE_CONTACT "Edgar@AnotherFoxGuy.com")
-set(CPACK_PACKAGE_VENDOR "Edgar@AnotherFoxGuy.com")
-SET(CPACK_PACKAGE_VERSION ${LIB_VERSION})
-SET(CPACK_PACKAGE_VERSION_MAJOR ${LIB_MAJOR_VERSION})
-SET(CPACK_PACKAGE_VERSION_MINOR ${LIB_MINOR_VERSION})
-SET(CPACK_PACKAGE_VERSION_PATCH ${LIB_BUILD_VERSION})
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.md")
-
-SET(CPACK_GENERATOR ZIP)
-IF (UNIX)
-    SET(CPACK_GENERATOR ${CPACK_GENERATOR};STGZ;TGZ;DEB;RPM)
-ENDIF (UNIX)
-IF (LINUX)
-    SET(CPACK_GENERATOR ${CPACK_GENERATOR};DEB;RPM)
-ENDIF (LINUX)
-IF (MSVC)
-    SET(CPACK_GENERATOR ${CPACK_GENERATOR};NSIS)
-ENDIF (MSVC)
-IF (APPLE)
-    SET(CPACK_GENERATOR ${CPACK_GENERATOR};PackageMaker)
-ENDIF (APPLE)
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${LIB_VERSION}-${CMAKE_SYSTEM_PROCESSOR}")
-include(CPack)
 
 # doxygen stuff
 find_package(Doxygen)
@@ -174,7 +151,3 @@ if (DOXYGEN_FOUND)
     # install man pages into packages, scope is now project root..
     #install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3 DESTINATION share/man/man3/ )
 endif (DOXYGEN_FOUND)
-
-# other doc files
-set(DOC_FILES Contributors.txt LICENSE ReadMe.md)
-install(FILES ${DOC_FILES} DESTINATION doc/caelum/)

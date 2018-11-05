@@ -26,8 +26,7 @@ if (INSTALL_OGRE_PLUGIN)
 endif (INSTALL_OGRE_PLUGIN)
 
 # install the headers: both source and build headers
-INSTALL(DIRECTORY ${Caelum_SOURCE_DIR}/main/include/ DESTINATION include/Caelum FILES_MATCHING PATTERN "*.h" PATTERN ".svn" EXCLUDE)
-INSTALL(DIRECTORY ${Caelum_BINARY_DIR}/main/include/ DESTINATION include/Caelum FILES_MATCHING PATTERN "*.h" PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY ${Caelum_SOURCE_DIR}/main/include/ DESTINATION include/Caelum)
 
 
 # --- Threading support (still needed for GCC even with C++11)
@@ -38,5 +37,10 @@ target_link_libraries(${LIBNAME} PRIVATE
         )
 
 # --- Ogre 3D graphics engine ---
-target_link_libraries(${LIBNAME} PRIVATE ${OGRE_LIBRARIES})
-target_include_directories(${LIBNAME} PRIVATE ${OGRE_INCLUDE_DIRS})
+if(DEFINED CONAN_OGRE_ROOT)
+      target_include_directories(${LIBNAME} PRIVATE CONAN_PKG::OGRE)
+      target_link_libraries(${LIBNAME} PRIVATE CONAN_PKG::OGRE)
+else()
+      target_link_libraries(${LIBNAME} PRIVATE ${OGRE_LIBRARIES})
+      target_include_directories(${LIBNAME} PRIVATE ${OGRE_INCLUDE_DIRS})
+endif()
