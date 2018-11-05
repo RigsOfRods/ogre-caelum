@@ -1,9 +1,37 @@
-language: c
-sudo: required
+env:
+   global:
+     - CONAN_REFERENCE: "Caelum/0.6.3"
+     - CONAN_USERNAME: "anotherfoxguy"
+     - CONAN_LOGIN_USERNAME: "anotherfoxguy"
+     - CONAN_CHANNEL: "Caelum"
+     - CONAN_UPLOAD: "https://api.bintray.com/conan/anotherfoxguy/ror-dependencies"
 
-before_install:
-  - sudo apt-get install -y cmake pkg-config libogre-1.9-dev libois-dev
+linux: &linux
+   os: linux
+   sudo: required
+   language: python
+   python: "3.6"
+   services:
+     - docker
+osx: &osx
+   os: osx
+   language: generic
+matrix:
+   include:
+
+      - <<: *linux
+        env: CONAN_GCC_VERSIONS=5 CONAN_ARCHS=x86_64 CONAN_DOCKER_IMAGE=lasote/conangcc5
+
+      - <<: *linux
+        env: CONAN_GCC_VERSIONS=6 CONAN_ARCHS=x86_64 CONAN_DOCKER_IMAGE=lasote/conangcc6
+
+      - <<: *linux
+        env: CONAN_GCC_VERSIONS=7 CONAN_ARCHS=x86_64 CONAN_DOCKER_IMAGE=lasote/conangcc7
+
+install:
+  - chmod +x .travis/install.sh
+  - ./.travis/install.sh
 
 script:
-  - cmake .
-  - make -j2
+  - chmod +x .travis/run.sh
+  - ./.travis/run.sh
