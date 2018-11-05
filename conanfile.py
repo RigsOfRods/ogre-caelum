@@ -2,7 +2,7 @@ from conans import ConanFile, CMake, tools
 
 
 class CaelumConan(ConanFile):
-    name = "Caelum"
+    name = "ogre-caelum"
     version = "0.6.3"
     license = "GNU Lesser General Public License v2.1"
     url = "https://github.com/RigsOfRods/Caelum/issues"

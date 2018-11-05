@@ -6,7 +6,7 @@ environment:
     PYTHON_VERSION: "2.7.8"
     PYTHON_ARCH: "32"
 
-    CONAN_REFERENCE: "Caelum/0.6.3"
+    CONAN_REFERENCE: "ogre-caelum/0.6.3"
     CONAN_USERNAME: "anotherfoxguy"
     CONAN_LOGIN_USERNAME: "anotherfoxguy"
     CONAN_CHANNEL: "testing"

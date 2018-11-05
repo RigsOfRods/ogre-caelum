@@ -1,9 +1,9 @@
 env:
    global:
-     - CONAN_REFERENCE: "Caelum/0.6.3"
+     - CONAN_REFERENCE: "ogre-caelum/0.6.3"
      - CONAN_USERNAME: "anotherfoxguy"
      - CONAN_LOGIN_USERNAME: "anotherfoxguy"
-     - CONAN_CHANNEL: "Caelum"
+     - CONAN_CHANNEL: "testing"
      - CONAN_UPLOAD: "https://api.bintray.com/conan/anotherfoxguy/ror-dependencies"
 
 linux: &linux
