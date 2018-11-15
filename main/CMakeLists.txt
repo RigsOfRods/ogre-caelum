@@ -27,7 +27,7 @@ endif (INSTALL_OGRE_PLUGIN)
 
 # install the headers: both source and build headers
 INSTALL(DIRECTORY ${Caelum_SOURCE_DIR}/main/include/ DESTINATION include/Caelum)
-
+INSTALL(DIRECTORY ${Caelum_BINARY_DIR}/main/include/ DESTINATION include/Caelum)
 
 # --- Threading support (still needed for GCC even with C++11)
 set(CMAKE_THREAD_PREFER_PTHREAD YES)
