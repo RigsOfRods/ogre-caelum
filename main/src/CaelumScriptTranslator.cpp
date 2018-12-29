@@ -411,7 +411,10 @@ namespace Caelum
 #else
             ResourcePtr resource = mgr->create (objNode->name, compiler->getResourceGroup());
 #endif
-            resource->_notifyOrigin (objNode->file);
+            if (resource)
+	    {
+                resource->_notifyOrigin (objNode->file);
+	    }
             return;
         }
 
