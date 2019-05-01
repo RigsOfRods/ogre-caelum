@@ -13,7 +13,7 @@ class CaelumConan(ConanFile):
 
 
     def requirements(self):
-        self.requires.add('OGRE/1.11.5@anotherfoxguy/stable')
+        self.requires.add('OGRE/1.11.6@anotherfoxguy/stable')
 
     def build(self):
         cmake = CMake(self)
