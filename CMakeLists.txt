@@ -34,6 +34,11 @@ SET(BUILD_SHARED_LIBS OFF)
 
 SET(CMAKE_USE_RELATIVE_PATHS OFF)
 
+if (WIN32)
+  # Create debug libraries with _d postfix
+  set(CMAKE_DEBUG_POSTFIX "_d")
+endif ()
+
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup(TARGETS)
