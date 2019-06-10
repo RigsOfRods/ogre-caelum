@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 class CaelumConan(ConanFile):
     name = "ogre-caelum"
-    version = "0.6.3"
+    version = "0.6.3-p1"
     license = "GNU Lesser General Public License v2.1"
     url = "https://github.com/RigsOfRods/Caelum/issues"
     description = "Caelum is a library which provides cross-platform socket abstraction"
