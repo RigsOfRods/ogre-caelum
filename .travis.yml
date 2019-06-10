@@ -20,13 +20,10 @@ matrix:
    include:
 
       - <<: *linux
-        env: CONAN_GCC_VERSIONS=5 CONAN_ARCHS=x86_64 CONAN_DOCKER_IMAGE=lasote/conangcc5
-
+        env: CONAN_GCC_VERSIONS=6 CONAN_ARCHS=x86_64 CONAN_DOCKER_IMAGE=conanio/gcc6
+        
       - <<: *linux
-        env: CONAN_GCC_VERSIONS=6 CONAN_ARCHS=x86_64 CONAN_DOCKER_IMAGE=lasote/conangcc6
-
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=7 CONAN_ARCHS=x86_64 CONAN_DOCKER_IMAGE=lasote/conangcc7
+        env: CONAN_GCC_VERSIONS=8 CONAN_ARCHS=x86_64 CONAN_DOCKER_IMAGE=conanio/gcc8
 
 install:
   - chmod +x .travis/install.sh
